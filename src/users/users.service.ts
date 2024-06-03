@@ -25,6 +25,13 @@ export class UsersService {
             throw new BadRequestException('This email already exists.')
         }
     }
+    async getUserById(userId: string): Promise<UserResponse> {
+        const user = await this.usersRepository.findOneById(userId);
+        if (!user) {
+          throw new NotFoundException(`User not found by _id: '${userId}'.`);
+        }
+        return this.buildResponse(user);
+      }
 
     async validateUser(email: string, password: string): Promise<UserResponse> {
         const user = await this.usersRepository.findOneByEmail(email);

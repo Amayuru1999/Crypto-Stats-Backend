@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { UserResponse } from 'src/users/dto/response/user-response.dto';
 import { Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
-interface TokenPayLoad{
-    userId:String;
+export interface TokenPayLoad{
+    userId:string;
 }
 
 @Injectable()
