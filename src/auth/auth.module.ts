@@ -7,6 +7,7 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { EncryptionService } from './encryption.service';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
           }),
   ],
   controllers: [AuthController],
-  providers: [AuthService,LocalStrategy,JwtStrategy],
+  providers: [AuthService,LocalStrategy,JwtStrategy,EncryptionService],
+  exports:[EncryptionService],
   
 })
 export class AuthModule {}

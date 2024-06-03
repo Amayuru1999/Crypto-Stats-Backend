@@ -19,6 +19,15 @@ export class UsersService {
         return this.buildResponse(user);
     }
 
+    async updateUser(userId: string, data: Partial<User>): Promise<UserResponse> {
+      const user = await this.usersRepository.updateOne(userId, data);
+      if (!user) {
+        throw new NotFoundException(`User not found by _id: '${userId}'.`);
+      }
+      return this.buildResponse(user);
+    }
+  
+
     private async validateCreateUserRequest(createUserRequest:CreateUserRequest):Promise<void>{
         const user =await this.usersRepository.findOneByEmail(createUserRequest.email);
         if(user){

@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
+import { CoinbaseModule } from './coinbase/coinbase.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { AuthModule } from './auth/auth.module';
       inject: [ConfigService],
     }),
     UsersModule,
-    AuthModule
+    AuthModule,
+    CoinbaseModule
   ],
   controllers: [AppController],
   providers: [AppService],
