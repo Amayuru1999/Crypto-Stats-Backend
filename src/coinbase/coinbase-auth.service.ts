@@ -79,4 +79,22 @@ export class CoinbaseAuthService {
       redirect_url: this.configService.get('COINBASE_REDIRECT_URI'),
     });
   }
+  async getAccessToken(userId: string): Promise<string> {
+    const coinbaseAuth = await this.usersService.getCoinbaseAuth(userId);
+    if (new Date().getTime() >= coinbaseAuth.expires.getTime()) {
+      const response$ = this.refreshAccessToken(coinbaseAuth);
+      const response = await lastValueFrom(response$);
+      await this.updateUserCoinbaseAuth(response.data, userId);
+      return response.data.access_token;
+    }
+    return this.encryptionService.decrypt(coinbaseAuth.accessToken);
+  }
+  private refreshAccessToken(coinbaseAuth: CoinbaseAuth) {
+    return this.httpService.post('https://www.coinbase.com/oauth/token', {
+      grant_type: 'refresh_token',
+      refresh_token: this.encryptionService.decrypt(coinbaseAuth.refreshToken),
+      client_id: this.configService.get('COINBASE_CLIENT_ID'),
+      client_secret: this.configService.get('COINBASE_CLIENT_SECRET'),
+    });
+  }
 }

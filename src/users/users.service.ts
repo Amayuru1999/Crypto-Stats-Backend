@@ -5,6 +5,7 @@ import { hash,compare } from 'bcrypt';
 import { UserResponse } from './dto/response/user-response.dto';
 import { User } from './models/User';
 import { Types } from 'mongoose';
+import { CoinbaseAuth } from './models/CoinbaseAuth';
 
 @Injectable()
 export class UsersService {
@@ -53,12 +54,24 @@ export class UsersService {
         }
         return this.buildResponse(user);
       }
-
+      async getCoinbaseAuth(userId: string): Promise<CoinbaseAuth> {
+        const user = await this.usersRepository.findOneById(userId);
+        if (!user) {
+          throw new NotFoundException(`User not found by _id: '${userId}'.`);
+        }
+        if (!user.coinbaseAuth) {
+          throw new UnauthorizedException(
+            `User with _id: '${userId}' has not authorized Coinbase.`,
+          );
+        }
+        return user.coinbaseAuth;
+      }
 
     private buildResponse(user:User):UserResponse{
         return{
             _id:(user._id as Types.ObjectId).toHexString(),
             email:user.email,
+            isCoinbaseAuthorized: !!user.coinbaseAuth,
         };
     }
 }
